@@ -13,6 +13,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -27,10 +28,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 public class MainActivity extends Activity {
 
 	public static final String EXTRA_MESSAGE = "com.mingmin.diablo3.MESSAGE";
+	private static final int RESULT_SETTINGS = 1;
 	private TextView textView;
 
 	@Override
@@ -62,11 +65,25 @@ public class MainActivity extends Activity {
 			// openSearch();
 			return true;
 		case R.id.action_settings:
-			// openSettings();
+			Intent i = new Intent(this, SettingsActivity.class);
+            startActivityForResult(i, RESULT_SETTINGS);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		switch (requestCode) {
+        case RESULT_SETTINGS:
+            //showUserSettings();
+            break;
+ 
+        }
 	}
 
 	/**
@@ -87,24 +104,28 @@ public class MainActivity extends Activity {
 	}
 
 	/** Called when the user clicks the Send button */
-	public void sendMessage(View view) {
-		// Do something in response to button
-		Intent intent = new Intent(this, DisplayMessageActivity.class);
-		EditText editText = (EditText) findViewById(R.id.edit_message);
-		String message = editText.getText().toString();
-		intent.putExtra(EXTRA_MESSAGE, message);
-		startActivity(intent);
-	}
-
-	public void retriveInfo(View view) {
-		textView = (TextView) findViewById(R.id.textView1);
-		String uri = "http://tw.battle.net/api/d3/profile/Skyrim-6746/hero/28144494";
+//	public void sendMessage(View view) {
+//		// Do something in response to button
+//		Intent intent = new Intent(this, DisplayMessageActivity.class);
+//		EditText editText = (EditText) findViewById(R.id.edit_message);
+//		String message = editText.getText().toString();
+//		intent.putExtra(EXTRA_MESSAGE, message);
+//		startActivity(intent);
+//	}
+	
+	public void getMyProfile(View view){
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		String syncConnPref = sharedPref.getString("battle_tag", "");
+		syncConnPref = syncConnPref.replace('#', '-');
+		String uri = "http://tw.battle.net/api/d3/profile/" + syncConnPref;
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			new DownloadWebpageTask().execute(uri);
+			//new DownloadWebpageTask().execute(uri);
+			Intent intent = new Intent(this, DisplayMessageActivity.class);
+			startActivity(intent);
 		} else {
-			textView.setText("No network connection available.");
+			
 		}
 	}
 
@@ -132,7 +153,7 @@ public class MainActivity extends Activity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(String result) {
-			textView.setText(result);
+
 		}
 	}
 	

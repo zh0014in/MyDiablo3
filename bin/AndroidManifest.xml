@@ -7,8 +7,9 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +28,14 @@
         <activity
             android:name="com.mingmin.diablo3.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
+            android:parentActivityName="com.mingmin.diablo3.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mingmin.diablo3.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.mingmin.diablo3.SettingsActivity"
+            android:label="@string/title_activity_settings"
             android:parentActivityName="com.mingmin.diablo3.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
